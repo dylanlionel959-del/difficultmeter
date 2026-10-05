@@ -36,4 +36,25 @@
 ├── styles.css          # Styling & corner overlay positioning
 ├── script.js           # Core logic, timeline management, & i18n
 ├── difficulties.json   # Database of faces, names, and star ratings
-└── README.md           # Documentation
+└── README.md           # Documentation```text
+
+
+🚀 Quick Start & Git Commands
+To clone this repository and run it locally or deploy it to GitHub Pages, run the following commands in your terminal:
+
+# Clone the repository
+```text git clone [https://github.com/YOUR-USERNAME/YOUR-REPOSITORY-NAME.git](https://github.com/YOUR-USERNAME/YOUR-REPOSITORY-NAME.git)```text
+
+# Navigate into the project folder
+cd YOUR-REPOSITORY-NAME
+
+# Stage your files
+git add .
+
+# Commit your changes
+git commit -m "Initial commit: GD Difficulty Meter Creator"
+
+# Push to your GitHub repository
+git push origin main
+
+
