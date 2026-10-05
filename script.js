@@ -9,6 +9,7 @@ const translations = {
     langLabel: "Language:",
     labelVideo: "1. Select Local Video:",
     labelPosition: "2. Meter Position:",
+    labelSize: "3. Icon Size:",
     posTL: "Top-Left",
     posTR: "Top-Right",
     posBL: "Bottom-Left",
@@ -31,6 +32,7 @@ const translations = {
     langLabel: "Idioma:",
     labelVideo: "1. Seleccionar Vídeo Local:",
     labelPosition: "2. Posición del Meter:",
+    labelSize: "3. Tamaño del Icono:",
     posTL: "Arriba a la Izquierda",
     posTR: "Arriba a la Derecha",
     posBL: "Abajo a la Izquierda",
@@ -56,6 +58,8 @@ const videoInput = document.getElementById('video-input');
 const videoPlayer = document.getElementById('video-player');
 const difficultySelect = document.getElementById('difficulty-select');
 const positionSelect = document.getElementById('position-select');
+const sizeRange = document.getElementById('size-range');
+const sizeValue = document.getElementById('size-value');
 const addSegmentBtn = document.getElementById('add-segment-btn');
 const timelineList = document.getElementById('timeline-list');
 const saveBtn = document.getElementById('save-btn');
@@ -87,6 +91,7 @@ function updateLanguageUI() {
   document.getElementById('i18n-lang-label').textContent = t.langLabel;
   document.getElementById('i18n-label-video').textContent = t.labelVideo;
   document.getElementById('i18n-label-position').textContent = t.labelPosition;
+  document.getElementById('i18n-label-size').textContent = t.labelSize;
   document.getElementById('i18n-pos-tl').textContent = t.posTL;
   document.getElementById('i18n-pos-tr').textContent = t.posTR;
   document.getElementById('i18n-pos-bl').textContent = t.posBL;
@@ -127,6 +132,13 @@ videoInput.addEventListener('change', (e) => {
 positionSelect.addEventListener('change', (e) => {
   meterOverlay.className = `meter-overlay ${e.target.value}`;
   updateOverlay();
+});
+
+// Cambiar tamaño en PX dinámicamente
+sizeRange.addEventListener('input', (e) => {
+  const val = e.target.value;
+  sizeValue.textContent = val;
+  meterOverlay.style.setProperty('--icon-size', `${val}px`);
 });
 
 // Agregar Segmento
@@ -171,26 +183,35 @@ function removeSegment(id) {
   updateOverlay();
 }
 
-// Guardar en Caché (localStorage)
+// Guardar en Caché (incluyendo tamaño y posición)
 saveBtn.addEventListener('click', () => {
   const dataToSave = {
     segments: timelineSegments,
-    position: positionSelect.value
+    position: positionSelect.value,
+    size: sizeRange.value
   };
   localStorage.setItem('gd_meter_config', JSON.stringify(dataToSave));
   alert(translations[currentLang].savedMsg);
 });
 
-// Cargar desde Caché (localStorage)
+// Cargar desde Caché
 loadBtn.addEventListener('click', () => {
   const savedData = localStorage.getItem('gd_meter_config');
   if (savedData) {
     const parsed = JSON.parse(savedData);
     timelineSegments = parsed.segments || [];
+    
     if (parsed.position) {
       positionSelect.value = parsed.position;
       meterOverlay.className = `meter-overlay ${parsed.position}`;
     }
+    
+    if (parsed.size) {
+      sizeRange.value = parsed.size;
+      sizeValue.textContent = parsed.size;
+      meterOverlay.style.setProperty('--icon-size', `${parsed.size}px`);
+    }
+
     renderTimelineList();
     updateOverlay();
     alert(translations[currentLang].loadedMsg);
