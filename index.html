@@ -40,6 +40,12 @@
           </select>
         </div>
 
+        <!-- Control de Tamaño en PX -->
+        <div class="form-group">
+          <label><span id="i18n-label-size">3. Icon Size:</span> <span id="size-value">65</span>px</label>
+          <input type="range" id="size-range" min="30" max="150" value="65" step="5">
+        </div>
+
         <hr>
 
         <h3 id="i18n-title-add">Add Timeline Segment</h3>
@@ -64,7 +70,7 @@
         <h3 id="i18n-title-list">Configured Timeline</h3>
         <ul id="timeline-list"></ul>
 
-        <!-- Botones de Caché / Guardado -->
+        <!-- Botones de Caché -->
         <div class="form-row" style="margin-top: 15px;">
           <button id="save-btn" class="save-btn">Save to Cache</button>
           <button id="load-btn" class="load-btn">Load from Cache</button>
