@@ -108,6 +108,20 @@ button:hover {
   background: #005f73;
 }
 
+.save-btn {
+  background: #27ae60 !important;
+}
+.save-btn:hover {
+  background: #219653 !important;
+}
+
+.load-btn {
+  background: #8e44ad !important;
+}
+.load-btn:hover {
+  background: #732d91 !important;
+}
+
 .video-wrapper {
   position: relative;
   width: 100%;
@@ -181,4 +195,3 @@ video {
   width: auto;
   padding: 2px 6px;
 }
-
