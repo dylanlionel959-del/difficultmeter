@@ -1,0 +1,86 @@
+[
+  {
+    "id": "auto",
+    "name": "Auto",
+    "stars": 1,
+    "icon": "https://static.wikia.nocookie.net/ftgd/images/6/62/Automatic.png/revision/latest?cb=20240120203949"
+  },
+  {
+    "id": "easy",
+    "name": "Easy",
+    "stars": 2,
+    "icon": "https://static.wikia.nocookie.net/ftgd/images/7/7a/Easy.png/revision/latest?cb=20240724211121"
+  },
+  {
+    "id": "normal",
+    "name": "Normal",
+    "stars": 3,
+    "icon": "https://static.wikia.nocookie.net/ftgd/images/f/fb/Normal.png/revision/latest?cb=20240729175330"
+  },
+  {
+    "id": "hard_4",
+    "name": "Hard",
+    "stars": 4,
+    "icon": "https://static.wikia.nocookie.net/ftgd/images/d/d5/Hard.png/revision/latest?cb=20240801164014"
+  },
+  {
+    "id": "hard_5",
+    "name": "Hard",
+    "stars": 5,
+    "icon": "https://static.wikia.nocookie.net/ftgd/images/d/d5/Hard.png/revision/latest?cb=20240801164014"
+  },
+  {
+    "id": "harder_6",
+    "name": "Harder",
+    "stars": 6,
+    "icon": "https://static.wikia.nocookie.net/ftgd/images/d/db/Harder.png/revision/latest?cb=20240801164114"
+  },
+  {
+    "id": "harder_7",
+    "name": "Harder",
+    "stars": 7,
+    "icon": "https://static.wikia.nocookie.net/ftgd/images/d/db/Harder.png/revision/latest?cb=20240801164114"
+  },
+  {
+    "id": "insane_8",
+    "name": "Insane",
+    "stars": 8,
+    "icon": "https://static.wikia.nocookie.net/ftgd/images/1/14/Insane2.png/revision/latest?cb=20240302135023"
+  },
+  {
+    "id": "insane_9",
+    "name": "Insane",
+    "stars": 9,
+    "icon": "https://static.wikia.nocookie.net/ftgd/images/1/14/Insane2.png/revision/latest?cb=20240302135023"
+  },
+  {
+    "id": "easy_demon",
+    "name": "Easy Demon",
+    "stars": 10,
+    "icon": "https://static.wikia.nocookie.net/ftgd/images/2/24/EasyDemon.png/revision/latest?cb=20240120204123"
+  },
+  {
+    "id": "medium_demon",
+    "name": "Medium Demon",
+    "stars": 10,
+    "icon": "https://static.wikia.nocookie.net/ftgd/images/5/57/Medium-Demon.png/revision/latest?cb=20240120232927"
+  },
+  {
+    "id": "hard_demon",
+    "name": "Hard Demon",
+    "stars": 10,
+    "icon": "https://static.wikia.nocookie.net/ftgd/images/9/9d/HardDemon.png/revision/latest?cb=20240801164526"
+  },
+  {
+    "id": "insane_demon",
+    "name": "Insane Demon",
+    "stars": 10,
+    "icon": "https://static.wikia.nocookie.net/ftgd/images/1/11/InsaneDemon.png/revision/latest?cb=20240120234848"
+  },
+  {
+    "id": "extreme_demon",
+    "name": "Extreme Demon",
+    "stars": 10,
+    "icon": "https://static.wikia.nocookie.net/ftgd/images/9/97/ExtremeDemon.png/revision/latest?cb=20240801164829"
+  }
+]

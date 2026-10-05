@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GD Difficulty Meter Creator</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <header class="app-header">
+      <div>
+        <h1>GD Difficulty Meter Overlay</h1>
+        <p class="subtitle" id="i18n-subtitle">An Open Source Client for Geometry Dash creators</p>
+      </div>
+      <div class="lang-selector">
+        <label for="lang-select" id="i18n-lang-label">Language:</label>
+        <select id="lang-select">
+          <option value="en" selected>English</option>
+          <option value="es">Español</option>
+        </select>
+      </div>
+    </header>
+
+    <div class="main-layout">
+      <!-- Panel de Controles -->
+      <div class="controls-panel">
+        <div class="form-group">
+          <label id="i18n-label-video">1. Select Local Video:</label>
+          <input type="file" id="video-input" accept="video/*">
+        </div>
+
+        <div class="form-group">
+          <label id="i18n-label-position">2. Meter Position:</label>
+          <select id="position-select">
+            <option value="top-left" id="i18n-pos-tl">Top-Left</option>
+            <option value="top-right" id="i18n-pos-tr">Top-Right</option>
+            <option value="bottom-left" id="i18n-pos-bl">Bottom-Left</option>
+            <option value="bottom-right" id="i18n-pos-br">Bottom-Right</option>
+          </select>
+        </div>
+
+        <hr>
+
+        <h3 id="i18n-title-add">Add Timeline Segment</h3>
+        <div class="form-group">
+          <label id="i18n-label-diff">Difficulty:</label>
+          <select id="difficulty-select"></select>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label id="i18n-label-start">Start (sec):</label>
+            <input type="number" id="start-time" step="0.1" min="0" value="0">
+          </div>
+          <div class="form-group">
+            <label id="i18n-label-end">End (sec):</label>
+            <input type="number" id="end-time" step="0.1" min="0" value="10">
+          </div>
+        </div>
+
+        <button id="add-segment-btn">Add Segment</button>
+
+        <h3 id="i18n-title-list">Configured Timeline</h3>
+        <ul id="timeline-list"></ul>
+      </div>
+
+      <!-- Área de Vista Previa -->
+      <div class="preview-panel">
+        <div class="video-wrapper" id="video-wrapper">
+          <video id="video-player" controls></video>
+          
+          <!-- Elemento flotante sin fondo -->
+          <div id="meter-overlay" class="meter-overlay top-left hidden">
+            <img id="meter-icon" src="" alt="Difficulty Face">
+            <div id="meter-stars" class="stars-container"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
