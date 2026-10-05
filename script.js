@@ -19,7 +19,12 @@ const translations = {
     labelEnd: "End (sec):",
     btnAdd: "Add Segment",
     titleList: "Configured Timeline",
-    alertTime: "Please check the start and end times."
+    alertTime: "Please check the start and end times.",
+    btnSave: "Save to Cache",
+    btnLoad: "Load from Cache",
+    savedMsg: "Configuration saved to browser cache successfully!",
+    loadedMsg: "Configuration loaded from cache successfully!",
+    noDataMsg: "No saved configuration found in cache."
   },
   es: {
     subtitle: "Un cliente de código abierto para creadores de Geometry Dash",
@@ -36,7 +41,12 @@ const translations = {
     labelEnd: "Fin (seg):",
     btnAdd: "Añadir Tramo",
     titleList: "Cronograma Configurado",
-    alertTime: "Revisa los tiempos de inicio y fin."
+    alertTime: "Revisa los tiempos de inicio y fin.",
+    btnSave: "Guardar en Caché",
+    btnLoad: "Cargar desde Caché",
+    savedMsg: "¡Configuración guardada en la caché del navegador con éxito!",
+    loadedMsg: "¡Configuración cargada desde la caché con éxito!",
+    noDataMsg: "No se encontró ninguna configuración guardada en la caché."
   }
 };
 
@@ -48,6 +58,8 @@ const difficultySelect = document.getElementById('difficulty-select');
 const positionSelect = document.getElementById('position-select');
 const addSegmentBtn = document.getElementById('add-segment-btn');
 const timelineList = document.getElementById('timeline-list');
+const saveBtn = document.getElementById('save-btn');
+const loadBtn = document.getElementById('load-btn');
 
 const meterOverlay = document.getElementById('meter-overlay');
 const meterIcon = document.getElementById('meter-icon');
@@ -85,6 +97,8 @@ function updateLanguageUI() {
   document.getElementById('i18n-label-end').textContent = t.labelEnd;
   addSegmentBtn.textContent = t.btnAdd;
   document.getElementById('i18n-title-list').textContent = t.titleList;
+  saveBtn.textContent = t.btnSave;
+  loadBtn.textContent = t.btnLoad;
 
   populateDifficultySelect();
   renderTimelineList();
@@ -157,6 +171,34 @@ function removeSegment(id) {
   updateOverlay();
 }
 
+// Guardar en Caché (localStorage)
+saveBtn.addEventListener('click', () => {
+  const dataToSave = {
+    segments: timelineSegments,
+    position: positionSelect.value
+  };
+  localStorage.setItem('gd_meter_config', JSON.stringify(dataToSave));
+  alert(translations[currentLang].savedMsg);
+});
+
+// Cargar desde Caché (localStorage)
+loadBtn.addEventListener('click', () => {
+  const savedData = localStorage.getItem('gd_meter_config');
+  if (savedData) {
+    const parsed = JSON.parse(savedData);
+    timelineSegments = parsed.segments || [];
+    if (parsed.position) {
+      positionSelect.value = parsed.position;
+      meterOverlay.className = `meter-overlay ${parsed.position}`;
+    }
+    renderTimelineList();
+    updateOverlay();
+    alert(translations[currentLang].loadedMsg);
+  } else {
+    alert(translations[currentLang].noDataMsg);
+  }
+});
+
 // Actualizar Overlay
 videoPlayer.addEventListener('timeupdate', updateOverlay);
 
@@ -176,4 +218,3 @@ function updateOverlay() {
     meterOverlay.classList.add('hidden');
   }
 }
-
