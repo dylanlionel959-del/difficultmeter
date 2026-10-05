@@ -25,7 +25,12 @@ const translations = {
     btnLoad: "Load from Cache",
     savedMsg: "Configuration saved to browser cache successfully!",
     loadedMsg: "Configuration loaded from cache successfully!",
-    noDataMsg: "No saved configuration found in cache."
+    noDataMsg: "No saved configuration found in cache.",
+    btnRender: "Process & Render Video",
+    renderProgress: "Rendering: ",
+    alertNoVideo: "Please select a video file first.",
+    renderDone: "Rendering complete! You can download your video below.",
+    downloadLink: "Download Rendered Video"
   },
   es: {
     subtitle: "Un cliente de código abierto para creadores de Geometry Dash",
@@ -48,7 +53,12 @@ const translations = {
     btnLoad: "Cargar desde Caché",
     savedMsg: "¡Configuración guardada en la caché del navegador con éxito!",
     loadedMsg: "¡Configuración cargada desde la caché con éxito!",
-    noDataMsg: "No se encontró ninguna configuración guardada en la caché."
+    noDataMsg: "No se encontró ninguna configuración guardada en la caché.",
+    btnRender: "Procesar y Renderizar Vídeo",
+    renderProgress: "Renderizando: ",
+    alertNoVideo: "Por favor, selecciona un archivo de vídeo primero.",
+    renderDone: "¡Renderizado completado! Puedes descargar tu vídeo abajo.",
+    downloadLink: "Descargar Vídeo Renderizado"
   }
 };
 
@@ -64,6 +74,12 @@ const addSegmentBtn = document.getElementById('add-segment-btn');
 const timelineList = document.getElementById('timeline-list');
 const saveBtn = document.getElementById('save-btn');
 const loadBtn = document.getElementById('load-btn');
+const renderBtn = document.getElementById('render-btn');
+const renderProgressContainer = document.getElementById('render-progress-container');
+const renderStatus = document.getElementById('render-status');
+const renderProgress = document.getElementById('render-progress');
+const downloadContainer = document.getElementById('download-container');
+const downloadLink = document.getElementById('download-link');
 
 const meterOverlay = document.getElementById('meter-overlay');
 const meterIcon = document.getElementById('meter-icon');
@@ -104,6 +120,8 @@ function updateLanguageUI() {
   document.getElementById('i18n-title-list').textContent = t.titleList;
   saveBtn.textContent = t.btnSave;
   loadBtn.textContent = t.btnLoad;
+  renderBtn.textContent = t.btnRender;
+  downloadLink.textContent = t.downloadLink;
 
   populateDifficultySelect();
   renderTimelineList();
@@ -183,7 +201,7 @@ function removeSegment(id) {
   updateOverlay();
 }
 
-// Guardar en Caché (incluyendo tamaño y posición)
+// Guardar en Caché
 saveBtn.addEventListener('click', () => {
   const dataToSave = {
     segments: timelineSegments,
@@ -220,7 +238,7 @@ loadBtn.addEventListener('click', () => {
   }
 });
 
-// Actualizar Overlay
+// Actualizar Overlay en tiempo real
 videoPlayer.addEventListener('timeupdate', updateOverlay);
 
 function updateOverlay() {
@@ -239,3 +257,146 @@ function updateOverlay() {
     meterOverlay.classList.add('hidden');
   }
 }
+
+// --- PROCESAR Y RENDERIZAR VÍDEO ---
+renderBtn.addEventListener('click', async () => {
+  if (!videoPlayer.src) {
+    alert(translations[currentLang].alertNoVideo);
+    return;
+  }
+
+  renderBtn.disabled = true;
+  renderProgressContainer.classList.remove('hidden');
+  downloadContainer.classList.add('hidden');
+  renderProgress.value = 0;
+
+  const t = translations[currentLang];
+  const canvas = document.createElement('canvas');
+  canvas.width = videoPlayer.videoWidth || 1280;
+  canvas.height = videoPlayer.videoHeight || 720;
+  const ctx = canvas.getContext('2d');
+
+  // Precargar imágenes de dificultades utilizadas
+  const imageCache = {};
+  for (const diff of difficultiesData) {
+    await new Promise((resolve) => {
+      const img = new Image();
+      img.crossOrigin = "anonymous";
+      img.src = diff.icon;
+      img.onload = () => {
+        imageCache[diff.id] = img;
+        resolve();
+      };
+      img.onerror = () => resolve();
+    });
+  }
+
+  const stream = canvas.captureStream(30); // 30 FPS
+  let recorder;
+  try {
+    recorder = new MediaRecorder(stream, { mimeType: 'video/webm; codecs=vp9' });
+  } catch (e) {
+    recorder = new MediaRecorder(stream);
+  }
+
+  const chunks = [];
+  recorder.ondataavailable = (e) => {
+    if (e.data.size > 0) chunks.push(e.data);
+  };
+
+  recorder.onstop = () => {
+    const blob = new Blob(chunks, { type: 'video/webm' });
+    const url = URL.createObjectURL(blob);
+    downloadLink.href = url;
+    downloadContainer.classList.remove('hidden');
+    renderBtn.disabled = false;
+    renderProgressContainer.classList.add('hidden');
+    alert(t.renderDone);
+  };
+
+  videoPlayer.pause();
+  videoPlayer.currentTime = 0;
+
+  recorder.start();
+
+  const duration = videoPlayer.duration;
+  const fps = 30;
+  const interval = 1 / fps;
+  let currentTime = 0;
+
+  const renderFrame = () => {
+    if (currentTime <= duration) {
+      videoPlayer.currentTime = currentTime;
+    }
+  };
+
+  videoPlayer.onseeked = () => {
+    // Dibujar fotograma del vídeo
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(videoPlayer, 0, 0, canvas.width, canvas.height);
+
+    // Buscar segmento activo
+    const activeSegment = timelineSegments.find(
+      seg => currentTime >= seg.start && currentTime <= seg.end
+    );
+
+    if (activeSegment) {
+      const diff = activeSegment.difficulty;
+      const img = imageCache[diff.id];
+      const iconSize = parseInt(sizeRange.value) * (canvas.width / videoPlayer.clientWidth || 1);
+      const margin = 15 * (canvas.width / videoPlayer.clientWidth || 1);
+      
+      const pos = positionSelect.value;
+      let x = margin;
+      let y = margin;
+
+      if (pos === 'top-right') {
+        x = canvas.width - iconSize - margin;
+        y = margin;
+      } else if (pos === 'bottom-left') {
+        x = margin;
+        y = canvas.height - iconSize - (iconSize * 0.4) - margin;
+      } else if (pos === 'bottom-right') {
+        x = canvas.width - iconSize - margin;
+        y = canvas.height - iconSize - (iconSize * 0.4) - margin;
+      }
+
+      if (img) {
+        ctx.shadowColor = 'rgba(0, 0, 0, 0.9)';
+        ctx.shadowBlur = 8;
+        ctx.drawImage(img, x, y, iconSize, iconSize);
+        ctx.shadowBlur = 0; // Reset sombra
+      }
+
+      // Dibujar estrellas
+      ctx.fillStyle = '#ffe600';
+      ctx.font = `bold ${Math.round(iconSize * 0.28)}px Arial`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'top';
+      ctx.strokeStyle = '#000';
+      ctx.lineWidth = 3;
+
+      const textX = x + (iconSize / 2);
+      const textY = y + iconSize + 4;
+      const starsText = `${diff.stars}★`;
+
+      ctx.strokeText(starsText, textX, textY);
+      ctx.fillText(starsText, textX, textY);
+    }
+
+    // Actualizar barra de progreso
+    const percent = Math.min(100, Math.round((currentTime / duration) * 100));
+    renderProgress.value = percent;
+    renderStatus.textContent = `${t.renderProgress}${percent}%`;
+
+    currentTime += interval;
+    if (currentTime <= duration) {
+      setTimeout(renderFrame, 10);
+    } else {
+      recorder.stop();
+      videoPlayer.onseeked = null;
+    }
+  };
+
+  renderFrame();
+});
